@@ -1,0 +1,134 @@
+class MyNextMovieNet(nn.Module):
+  def __init__(self, num_users, num_movies, embedding_dim=32):
+    super(MyNextMovieNet, self).__init__()
+    self.user_embedding = nn.Embedding(num_users, embedding_dim)
+    self.movie_embedding = nn.Embedding(num_movies, embedding_dim)
+    self.fc1 = nn.Linear(embedding_dim * 2, 128)
+    self.fc2 = nn.Linear(128, 64)
+    self.fc3 = nn.Linear(64, 32)
+    self.dropout = nn.Dropout(0.5)
+    self.bn1 = nn.BatchNorm1d(128)
+    self.bn2 = nn.BatchNorm1d(64)
+    self.output = nn.Linear(32, 1)
+
+  def forward(self, user_ids, movie_ids, genre_vectors):
+    user_embedded = self.user_embedding(user_ids)
+    movie_embedded = self.movie_embedding(movie_ids)
+    x = torch.cat([user_embedded, movie_embedded], dim=1)
+    x = torch.relu(self.bn1(self.fc1(x)))
+    x = self.dropout(x)
+    x = torch.relu(self.bn2(self.fc2(x)))
+    x = self.dropout(x)
+    x = torch.relu(self.fc3(x))
+    return self.output(x)
+  
+
+
+  # class MovieDataset(Dataset):
+#     def __init__(self, df, genre_to_id):
+#         self.user_ids = torch.tensor(df['userId'].values, dtype=torch.long)
+#         self.movie_ids = torch.tensor(df['movieId'].values, dtype=torch.long)
+#         self.ratings = torch.tensor(df['rating'].values, dtype=torch.float32)
+#         self.genres = [self._process_genre(genres, genre_to_id) for genres in df['ml_genres']]
+
+#     def _process_genre(self, genre_string, genre_to_id):
+#         genre_ids = [genre_to_id[genre] for genre in genre_string.split('|')]
+#         return torch.tensor(genre_ids, dtype=torch.long)
+
+#     def __len__(self):
+#         return len(self.ratings)
+
+#     def __getitem__(self, idx):
+#         return {
+#             'user_id': self.user_ids[idx],
+#             'movie_id': self.movie_ids[idx],
+#             'rating': self.ratings[idx],
+#             'genre_ids': self.genres[idx]
+#         }
+
+Lower validation loss, saving model to: /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/deep_model_ml32_genre_v2.pt
+Epoch [1/10], Loss: 1.2338, Train MAE: 0.8581, Val Loss: 0.9435, Val MAE: 0.7720, Train Precision: 0.5500, Val Precision: 0.9000, Time: 12.2069 minutes
+Lower validation loss, saving model to: /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/deep_model_ml32_genre_v2.pt
+Epoch [2/10], Loss: 0.8433, Train MAE: 0.7057, Val Loss: 0.7905, Val MAE: 0.6823, Train Precision: 1.0000, Val Precision: 1.0000, Time: 22.1865 minutes
+Lower validation loss, saving model to: /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/deep_model_ml32_genre_v2.pt
+Epoch [3/10], Loss: 0.7630, Train MAE: 0.6645, Val Loss: 0.7749, Val MAE: 0.6811, Train Precision: 1.0000, Val Precision: 1.0000, Time: 33.6211 minutes
+Lower validation loss, saving model to: /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/deep_model_ml32_genre_v2.pt
+Epoch [4/10], Loss: 0.7401, Train MAE: 0.6533, Val Loss: 0.7701, Val MAE: 0.6805, Train Precision: 0.9500, Val Precision: 1.0000, Time: 43.1973 minutes
+Epoch [5/10], Loss: 0.7307, Train MAE: 0.6491, Val Loss: 0.7702, Val MAE: 0.6819, Train Precision: 1.0000, Val Precision: 1.0000, Time: 53.1036 minutes
+Epoch [6/10], Loss: 0.7258, Train MAE: 0.6472, Val Loss: 0.7802, Val MAE: 0.6907, Train Precision: 1.0000, Val Precision: 0.9500, Time: 62.7071 minutes
+Epoch [7/10], Loss: 0.7230, Train MAE: 0.6459, Val Loss: 0.7898, Val MAE: 0.7002, Train Precision: 1.0000, Val Precision: 1.0000, Time: 72.3246 minutes
+Epoch [8/10], Loss: 0.7208, Train MAE: 0.6449, Val Loss: 0.7983, Val MAE: 0.7068, Train Precision: 1.0000, Val Precision: 1.0000, Time: 81.6867 minutes
+Epoch [9/10], Loss: 0.7191, Train MAE: 0.6440, Val Loss: 0.8226, Val MAE: 0.7236, Train Precision: 1.0000, Val Precision: 1.0000, Time: 91.7211 minutes
+Epoch [10/10], Loss: 0.7170, Train MAE: 0.6431, Val Loss: 0.8247, Val MAE: 0.7242, Train Precision: 1.0000, Val Precision: 1.0000, Time: 101.1419 minutes
+
+Finished preprocessing, entering training loop: 2.25 seconds
+Epoch [1/10], Loss: 1.2436, Train MAE: 0.8618, Val Loss: 0.9492, Val MAE: 0.7764, Train Precision: 0.7000, Val Precision: 1.0000, Time: 8.7646 minutes
+Epoch [2/10], Loss: 0.8470, Train MAE: 0.7066, Val Loss: 0.8073, Val MAE: 0.6974, Train Precision: 0.9500, Val Precision: 0.9500, Time: 26.8598 minutes
+Epoch [3/10], Loss: 0.7650, Train MAE: 0.6665, Val Loss: 0.7793, Val MAE: 0.6811, Train Precision: 1.0000, Val Precision: 0.9500, Time: 41.3873 minutes
+Epoch [4/10], Loss: 0.7420, Train MAE: 0.6557, Val Loss: 0.7758, Val MAE: 0.6799, Train Precision: 0.9500, Val Precision: 1.0000, Time: 58.2552 minutes
+Epoch [5/10], Loss: 0.7328, Train MAE: 0.6513, Val Loss: 0.7617, Val MAE: 0.6756, Train Precision: 1.0000, Val Precision: 1.0000, Time: 68.4414 minutes
+Epoch [6/10], Loss: 0.7280, Train MAE: 0.6490, Val Loss: 0.7598, Val MAE: 0.6747, Train Precision: 0.9500, Val Precision: 1.0000, Time: 79.5913 minutes
+Epoch [7/10], Loss: 0.7245, Train MAE: 0.6474, Val Loss: 0.7543, Val MAE: 0.6699, Train Precision: 1.0000, Val Precision: 1.0000, Time: 92.9447 minutes
+Epoch [8/10], Loss: 0.7214, Train MAE: 0.6458, Val Loss: 0.7587, Val MAE: 0.6735, Train Precision: 1.0000, Val Precision: 1.0000, Time: 107.1919 minutes
+Epoch [9/10], Loss: 0.7181, Train MAE: 0.6441, Val Loss: 0.7566, Val MAE: 0.6721, Train Precision: 1.0000, Val Precision: 1.0000, Time: 119.4789 minutes
+Epoch [10/10], Loss: 0.7149, Train MAE: 0.6425, Val Loss: 0.7495, Val MAE: 0.6672, Train Precision: 1.0000, Val Precision: 1.0000, Time: 129.3402 minutes
+
+
+True
+Including genre information in training
+genre processed: 2.55 minutes
+Number of genres: 20
+tensors processed: 2.57 minutes
+split processed: 2.72 minutes
+train processed: 2.72 minutes
+test processed: 2.72 minutes
+Number of users: 200947
+Number of movies: 16034
+Finished preprocessing, entering training loop: 164.51 seconds
+Epoch [1/10], Loss: 1.2046, Train MAE: 0.8512, Val Loss: 0.9244, Val MAE: 0.7544, Train Precision: 0.7000, Val Precision: 1.0000, Time: 13.7799 minutes
+Epoch [2/10], Loss: 0.8432, Train MAE: 0.7044, Val Loss: 0.7873, Val MAE: 0.6800, Train Precision: 1.0000, Val Precision: 1.0000, Time: 24.0944 minutes
+Epoch [3/10], Loss: 0.7610, Train MAE: 0.6662, Val Loss: 0.7639, Val MAE: 0.6710, Train Precision: 1.0000, Val Precision: 1.0000, Time: 35.1882 minutes
+Epoch [4/10], Loss: 0.7384, Train MAE: 0.6549, Val Loss: 0.7586, Val MAE: 0.6676, Train Precision: 1.0000, Val Precision: 1.0000, Time: 46.8552 minutes
+Epoch [5/10], Loss: 0.7294, Train MAE: 0.6503, Val Loss: 0.7492, Val MAE: 0.6619, Train Precision: 1.0000, Val Precision: 1.0000, Time: 56.5497 minutes
+Epoch [6/10], Loss: 0.7248, Train MAE: 0.6479, Val Loss: 0.7465, Val MAE: 0.6622, Train Precision: 1.0000, Val Precision: 1.0000, Time: 67.0517 minutes
+Epoch [7/10], Loss: 0.7220, Train MAE: 0.6463, Val Loss: 0.7371, Val MAE: 0.6570, Train Precision: 1.0000, Val Precision: 1.0000, Time: 76.5483 minutes
+Epoch [8/10], Loss: 0.7197, Train MAE: 0.6451, Val Loss: 0.7448, Val MAE: 0.6628, Train Precision: 1.0000, Val Precision: 1.0000, Time: 86.0719 minutes
+Epoch [9/10], Loss: 0.7175, Train MAE: 0.6439, Val Loss: 0.7387, Val MAE: 0.6591, Train Precision: 0.9500, Val Precision: 1.0000, Time: 95.7094 minutes
+Epoch [10/10], Loss: 0.7150, Train MAE: 0.6425, Val Loss: 0.7342, Val MAE: 0.6567, Train Precision: 1.0000, Val Precision: 1.0000, Time: 106.0848 minutes
+Plot saved to /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/metrics_plot.png
+Figure(1500x1000)
+
+
+True
+Including genre information in training
+genre processed: 2.29 minutes
+Number of genres: 20
+tensors processed: 2.31 minutes
+split processed: 2.35 minutes
+train processed: 2.35 minutes
+test processed: 2.35 minutes
+Number of users: 200947
+Number of movies: 16034
+Finished preprocessing, entering training loop: 141.75 seconds
+Epoch [1/20], Loss: 1.2695, Train MAE: 0.8712, Val Loss: 0.9361, Val MAE: 0.7610, Train Precision: 0.5000, Val Precision: 0.7500, Time: 12.1926 minutes
+Epoch [2/20], Loss: 0.8508, Train MAE: 0.7083, Val Loss: 0.7781, Val MAE: 0.6733, Train Precision: 1.0000, Val Precision: 1.0000, Time: 22.3287 minutes
+Epoch [3/20], Loss: 0.7634, Train MAE: 0.6676, Val Loss: 0.7418, Val MAE: 0.6575, Train Precision: 1.0000, Val Precision: 1.0000, Time: 32.5465 minutes
+Epoch [4/20], Loss: 0.7392, Train MAE: 0.6558, Val Loss: 0.7313, Val MAE: 0.6522, Train Precision: 1.0000, Val Precision: 1.0000, Time: 42.2652 minutes
+Epoch [5/20], Loss: 0.7297, Train MAE: 0.6508, Val Loss: 0.7273, Val MAE: 0.6510, Train Precision: 1.0000, Val Precision: 1.0000, Time: 51.9070 minutes
+Epoch [6/20], Loss: 0.7248, Train MAE: 0.6481, Val Loss: 0.7242, Val MAE: 0.6466, Train Precision: 1.0000, Val Precision: 1.0000, Time: 62.2451 minutes
+Epoch [7/20], Loss: 0.7215, Train MAE: 0.6462, Val Loss: 0.7224, Val MAE: 0.6455, Train Precision: 1.0000, Val Precision: 1.0000, Time: 71.8486 minutes
+Epoch [8/20], Loss: 0.7186, Train MAE: 0.6445, Val Loss: 0.7205, Val MAE: 0.6439, Train Precision: 1.0000, Val Precision: 1.0000, Time: 81.2580 minutes
+Epoch [9/20], Loss: 0.7158, Train MAE: 0.6429, Val Loss: 0.7191, Val MAE: 0.6459, Train Precision: 1.0000, Val Precision: 1.0000, Time: 91.7612 minutes
+Epoch [10/20], Loss: 0.7130, Train MAE: 0.6414, Val Loss: 0.7189, Val MAE: 0.6478, Train Precision: 1.0000, Val Precision: 1.0000, Time: 101.2914 minutes
+Epoch [11/20], Loss: 0.7102, Train MAE: 0.6399, Val Loss: 0.7173, Val MAE: 0.6461, Train Precision: 1.0000, Val Precision: 1.0000, Time: 111.2736 minutes
+Epoch [12/20], Loss: 0.7075, Train MAE: 0.6386, Val Loss: 0.7165, Val MAE: 0.6478, Train Precision: 1.0000, Val Precision: 1.0000, Time: 120.7986 minutes
+Epoch [13/20], Loss: 0.7047, Train MAE: 0.6372, Val Loss: 0.7172, Val MAE: 0.6502, Train Precision: 1.0000, Val Precision: 1.0000, Time: 133.3100 minutes
+Epoch [14/20], Loss: 0.7019, Train MAE: 0.6357, Val Loss: 0.7142, Val MAE: 0.6482, Train Precision: 1.0000, Val Precision: 1.0000, Time: 149.0011 minutes
+Epoch [15/20], Loss: 0.6990, Train MAE: 0.6343, Val Loss: 0.7103, Val MAE: 0.6457, Train Precision: 1.0000, Val Precision: 1.0000, Time: 160.2320 minutes
+Epoch [16/20], Loss: 0.6962, Train MAE: 0.6328, Val Loss: 0.7064, Val MAE: 0.6437, Train Precision: 1.0000, Val Precision: 1.0000, Time: 170.2633 minutes
+Epoch [17/20], Loss: 0.6935, Train MAE: 0.6316, Val Loss: 0.7037, Val MAE: 0.6416, Train Precision: 1.0000, Val Precision: 1.0000, Time: 179.8194 minutes
+Epoch [18/20], Loss: 0.6908, Train MAE: 0.6302, Val Loss: 0.7059, Val MAE: 0.6453, Train Precision: 1.0000, Val Precision: 1.0000, Time: 190.1815 minutes
+Epoch [19/20], Loss: 0.6883, Train MAE: 0.6290, Val Loss: 0.7019, Val MAE: 0.6425, Train Precision: 1.0000, Val Precision: 1.0000, Time: 200.2754 minutes
+Epoch [20/20], Loss: 0.6858, Train MAE: 0.6279, Val Loss: 0.6983, Val MAE: 0.6401, Train Precision: 1.0000, Val Precision: 1.0000, Time: 210.4954 minutes
+Plot saved to /Users/chase/Masters/csml/final_project/django/mynextmovienet/web/metrics_plot.png
+Figure(1500x1000)

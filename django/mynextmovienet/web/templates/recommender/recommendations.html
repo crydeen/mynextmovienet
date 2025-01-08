@@ -1,0 +1,149 @@
+<!-- templates/recommender/recommendations.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Movie Recommendations</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1b1b1d;
+            color: #f1f1f2;
+        }
+
+        .movie-list-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .movie-item {
+            flex: 0 0 auto;
+            width: 150px;
+            margin-right: 10px;
+            text-align: center;
+            background-color: #2c2c2e;
+            border-radius: 8px;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+
+        .movie-item:hover {
+            transform: scale(1.05);
+        }
+
+        .movie-image img {
+            border-radius: 8px;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Center the title and apply font styling */
+        h2 {
+            color: white; /* A warm, inviting movie theater accent color */
+            margin-bottom: 20px;
+        }
+
+        /* Styling for the themed 'Return' button */
+        .btn-back {
+            background-color: #f8e71c;  /* Theater-themed accent color */
+            color: #1b1b1d;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #d4c013;
+            color: #1b1b1d;
+        }
+
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.8); 
+            z-index: 1000; 
+        }
+        .modal-dialog { 
+            max-width: 500px; 
+            margin: 10% auto; 
+        }
+        .modal-content { 
+            background-color: #2c2c2e; 
+            color: #f1f1f2; 
+            padding: 20px; 
+            border-radius: 8px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center my-5">
+        <h2 class="display-4">Your Recommended Movies</h2>
+    
+        <!-- Horizontal Scrolling Movie List -->
+        <div class="d-flex justify-content-center">
+            <div class="movie-list-container my-4 margin" id="recommendedMovieList">
+                {% for movie in recommendations %}
+                <div class="movie-item" data-name="{{ movie.title | lower }}">
+                    <div class="movie-image" onclick="showMovieDetails('{{ movie.title|escapejs }}', '{{ movie.tmdb_description|escapejs }}', '{{ movie.tmdb_minute|escapejs }}')">
+                        <img src="{{ movie.link }}" alt="{{ movie.title }}" style="width:100%; height:100%; border-radius:8px;">
+                    </div>
+                    <div class="font-weight-bold text-light mt-2">{{ movie.title }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <!-- Centered Button to Return to Selection -->
+        <button onclick="window.location.href='{% url 'show_popular_movies' %}'" class="btn btn-back mt-4 mx-auto d-block">Return to Movie Selection</button>
+    </div>
+
+    <!-- Modal Structure -->
+    <div class="modal" id="movieModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="movieModalTitle"></h5>
+              <button type="button" class="close" onclick="closeMovieDetails()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p id="movieModalDescription"></p>
+              <p><strong>Runtime:</strong> <span id="movieModalRuntime"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function showMovieDetails(name, description, runtime, imageUrl) {
+            runtime = parseInt(runtime)
+            runtime = runtime + ""
+            runtime = runtime + " minutes"
+            document.getElementById('movieModalTitle').innerText = name;
+            document.getElementById('movieModalDescription').innerText = description;
+            document.getElementById('movieModalRuntime').innerText = runtime;
+            document.getElementById('movieModal').style.display = 'block';
+        }
+
+        // Function to close the modal
+        function closeMovieDetails() {
+            document.getElementById('movieModal').style.display = 'none';
+        }
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
