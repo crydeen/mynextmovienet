@@ -16,16 +16,16 @@ import glob
 import matplotlib.pyplot as plt
 
 pd.options.mode.chained_assignment = None
-df_movie_info = pd.read_csv(os.path.join(os.path.dirname(__file__), "ml32_movie_info.csv"))
+df_movie_info = pd.read_csv(os.path.join(os.path.dirname(__file__), "min_movie_info.csv"))
 
 # Reform Ratings Dataframe
-# df_list = []
-# csv_files = glob.glob(os.path.join(os.path.dirname(__file__), "min_rating_[1-5].csv"))
-# for file in sorted(csv_files):
-#     df = pd.read_csv(file)
-#     df_list.append(df)
-# df_ratings = pd.concat(df_list, ignore_index=True)
-df_ratings = pd.read_csv(os.path.join(os.path.dirname(__file__), "ml32_rating.csv"), usecols=['userId', 'movieId', 'rating'])
+df_list = []
+csv_files = glob.glob(os.path.join(os.path.dirname(__file__), "min_rating_[1-5].csv"))
+for file in sorted(csv_files):
+    df = pd.read_csv(file)
+    df_list.append(df)
+df_ratings = pd.concat(df_list, ignore_index=True)
+# df_ratings = pd.read_csv(os.path.join(os.path.dirname(__file__), "ml32_rating.csv"), usecols=['userId', 'movieId', 'rating'])
 
 class MyNextMovieNet(nn.Module):
     def __init__(self, num_users, num_movies, num_genres, embedding_dim=32):
@@ -573,7 +573,7 @@ def load_model(genre_bool):
     index_to_movie_id = {idx: movie_id for movie_id, idx in movie_id_to_index.items()}
     if genre_bool:
         model = MyNextMovieNet(num_users, num_movies, num_genres)
-        model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'deep_model_ml32_genre_v3.pt'), weights_only=True))
+        model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'deep_model_ml32_genre_v1.pt'), weights_only=True))
     else:
         model = MyNextMovieNetOG(num_users, num_movies)
         model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'deep_model_ml32_v2.pt'), weights_only=True))
